@@ -16,12 +16,13 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.lang.module.ResolutionException;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest
 public class PagamentoControllerTests {
@@ -62,7 +63,8 @@ public class PagamentoControllerTests {
         //id não existe - lança exception
         Mockito.when(service.getById(nonExistingId)).thenThrow(ResourceNotFoundException.class);
 
-        
+        //Simulando a criação de createPagamento
+        Mockito.when(service.create(any())).thenReturn(dto);
     }
 
     @Test
@@ -94,5 +96,25 @@ public class PagamentoControllerTests {
                 .accept(MediaType.APPLICATION_JSON));
 
         result.andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void createPagamentoShouldReturnDtoCreated() throws Exception{
+        PagamentoDTO newPagamentoDTO = Factory.createNewPagamentoDTO();
+
+        String jsonRequestBody = objectMapper.writeValueAsString(newPagamentoDTO);
+
+        mockMvc.perform(post("/pagamentos")
+                .content(jsonRequestBody)
+                .contentType(MediaType.APPLICATION_JSON) //Request
+                .accept(MediaType.APPLICATION_JSON))//Response
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(header().exists("Location"))
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.valor").exists())
+                .andExpect(jsonPath("$.status").exists())
+                .andExpect(jsonPath("$.pedidoId").exists())
+                .andExpect(jsonPath("$.formaDePagamentoId").exists());
     }
 }
