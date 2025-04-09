@@ -19,8 +19,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -65,6 +65,12 @@ public class PagamentoControllerTests {
 
         //Simulando a criação de createPagamento
         Mockito.when(service.create(any())).thenReturn(dto);
+
+        //Simulando o comportamento do service - updatePagamento
+        //id existe
+        Mockito.when(service.updatePagamento(eq(existingId), any())).thenReturn(dto);
+        Mockito.when(service.updatePagamento(eq(nonExistingId), any())).thenThrow(ResourceNotFoundException.class);
+
     }
 
     @Test
@@ -116,5 +122,39 @@ public class PagamentoControllerTests {
                 .andExpect(jsonPath("$.status").exists())
                 .andExpect(jsonPath("$.pedidoId").exists())
                 .andExpect(jsonPath("$.formaDePagamentoId").exists());
+    }
+
+    @Test
+    public void updatePagamentoShouldReturnPagamentoDTOWhenIdExists() throws Exception{
+        //Convertendo JAVA para JSON
+        String jsonRequestBody = objectMapper.writeValueAsString(dto);
+        //PUT - tem corpo na requisição - JSON
+        //é preciso passar o corpo da requisição
+        mockMvc.perform(put("/pagamentos/{id}", existingId)
+                .content(jsonRequestBody)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.id").value(existingId))
+                .andExpect(jsonPath("$.valor").exists())
+                .andExpect(jsonPath("$.status").exists())
+                .andExpect(jsonPath("$.pedidoId").exists())
+                .andExpect(jsonPath("$.formaDePagamentoId").exists());
+
+
+    }
+
+    @Test
+    public void updatePagamentoShoulReturnResourceNotFoundExceptionWhenIdDoesNotExists() throws Exception{
+        String jsonRequestBody = objectMapper.writeValueAsString(dto);
+
+        mockMvc.perform(put("/pagamentos/{id}", nonExistingId)
+                .content(jsonRequestBody)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 }
