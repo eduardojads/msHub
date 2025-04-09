@@ -42,7 +42,7 @@ public class PagamentoControllerTests {
     private ObjectMapper objectMapper;
 
     @BeforeEach
-    void setUp() throws Exception{
+    void setUp() throws Exception {
 
         existingId = 1L;
         nonExistingId = 100L;
@@ -71,10 +71,16 @@ public class PagamentoControllerTests {
         Mockito.when(service.updatePagamento(eq(existingId), any())).thenReturn(dto);
         Mockito.when(service.updatePagamento(eq(nonExistingId), any())).thenThrow(ResourceNotFoundException.class);
 
+        //Simlulando o comportamento do delete
+        //id existe
+        Mockito.doNothing().when(service).deletePagamento(existingId);
+        //id não existe
+        Mockito.doThrow(ResourceNotFoundException.class).when(service).deletePagamento(nonExistingId);
+
     }
 
     @Test
-    public void getAllShouldReturnListPagamnetoDTO() throws Exception{
+    public void getAllShouldReturnListPagamnetoDTO() throws Exception {
 
         //chamando a requisição com o método GET - endpoint /pagamentos
         ResultActions result = mockMvc.perform(get("/pagamentos")
@@ -84,7 +90,7 @@ public class PagamentoControllerTests {
     }
 
     @Test
-    public void getByIdShouldReturnPagamentoDTOWhenIdExists() throws Exception{
+    public void getByIdShouldReturnPagamentoDTOWhenIdExists() throws Exception {
         ResultActions result = mockMvc.perform(get("/pagamentos/{id}", existingId)
                 .accept(MediaType.APPLICATION_JSON));
 
@@ -97,7 +103,7 @@ public class PagamentoControllerTests {
     }
 
     @Test
-    public void getByIdShouldThrowResourceNotFoundExceptionWhenIdDoesNotExists() throws Exception{
+    public void getByIdShouldThrowResourceNotFoundExceptionWhenIdDoesNotExists() throws Exception {
         ResultActions result = mockMvc.perform(get("/pagamentos/{id}", nonExistingId)
                 .accept(MediaType.APPLICATION_JSON));
 
@@ -105,15 +111,15 @@ public class PagamentoControllerTests {
     }
 
     @Test
-    public void createPagamentoShouldReturnDtoCreated() throws Exception{
+    public void createPagamentoShouldReturnDtoCreated() throws Exception {
         PagamentoDTO newPagamentoDTO = Factory.createNewPagamentoDTO();
 
         String jsonRequestBody = objectMapper.writeValueAsString(newPagamentoDTO);
 
         mockMvc.perform(post("/pagamentos")
-                .content(jsonRequestBody)
-                .contentType(MediaType.APPLICATION_JSON) //Request
-                .accept(MediaType.APPLICATION_JSON))//Response
+                        .content(jsonRequestBody)
+                        .contentType(MediaType.APPLICATION_JSON) //Request
+                        .accept(MediaType.APPLICATION_JSON))//Response
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(header().exists("Location"))
@@ -125,15 +131,15 @@ public class PagamentoControllerTests {
     }
 
     @Test
-    public void updatePagamentoShouldReturnPagamentoDTOWhenIdExists() throws Exception{
+    public void updatePagamentoShouldReturnPagamentoDTOWhenIdExists() throws Exception {
         //Convertendo JAVA para JSON
         String jsonRequestBody = objectMapper.writeValueAsString(dto);
         //PUT - tem corpo na requisição - JSON
         //é preciso passar o corpo da requisição
         mockMvc.perform(put("/pagamentos/{id}", existingId)
-                .content(jsonRequestBody)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
+                        .content(jsonRequestBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").exists())
@@ -147,13 +153,30 @@ public class PagamentoControllerTests {
     }
 
     @Test
-    public void updatePagamentoShoulReturnResourceNotFoundExceptionWhenIdDoesNotExists() throws Exception{
+    public void updatePagamentoShoulReturnResourceNotFoundExceptionWhenIdDoesNotExists() throws Exception {
         String jsonRequestBody = objectMapper.writeValueAsString(dto);
 
         mockMvc.perform(put("/pagamentos/{id}", nonExistingId)
-                .content(jsonRequestBody)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
+                        .content(jsonRequestBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void deletePagamentoShouldReturnPagamentoDTOWhenExists() throws Exception {
+
+        mockMvc.perform(delete("/pagamentos/{id}", existingId)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void deletePagamentoShouldThrowResourceNotFoundExceptionWhenIdDoesNotExists() throws Exception {
+        mockMvc.perform(delete("/pagamentos/{id}", nonExistingId)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
