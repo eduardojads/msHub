@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 @SpringBootTest
 @Transactional
@@ -42,6 +43,19 @@ public class PagamentoServiceIT {
                 () -> {
                 service.deletePagamento(nonExistingId);
                 });
+    }
+
+    @Test
+    public void getAllShouldReturnListPagamentoDTO(){
+        var result = service.getAll();
+
+        Assertions.assertFalse(result.isEmpty());
+        Assertions.assertEquals(countTotalPagamentos, result.size());
+        Assertions.assertEquals(Double.valueOf(35.55), result.get(0).getValor().doubleValue());
+        Assertions.assertEquals("Amadeus Mozart", result.get(0).getNome());
+        Assertions.assertEquals("Chiquinha Gonzaga", result.get(1).getNome());
+        Assertions.assertNull(result.get(5).getNome());
+
     }
 
 }
