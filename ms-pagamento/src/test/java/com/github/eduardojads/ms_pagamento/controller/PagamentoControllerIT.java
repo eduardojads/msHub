@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.eduardojads.ms_pagamento.dto.PagamentoDTO;
 import com.github.eduardojads.ms_pagamento.tests.Factory;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -12,8 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -107,9 +107,9 @@ public class PagamentoControllerIT {
         String jsonRequestBody = objectMapper.writeValueAsString(pagamentoDTO);
 
         mockMvc.perform(post("/pagamentos")
-                .content(jsonRequestBody)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
+                        .content(jsonRequestBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andDo(print())
                 .andExpect(header().exists("Location"))
@@ -122,4 +122,19 @@ public class PagamentoControllerIT {
 
 
     }
+
+    @Test
+    @DisplayName("Create deve lançar exception quando dados inválidos e retornar status 422")
+    public void createShouldThrowsExceptionWhenInvalidData() throws Exception {
+        pagamentoDTO = Factory.createPagamentoDTOWithInvalidData();
+        String jsonRequestBody = objectMapper.writeValueAsString(pagamentoDTO);
+
+        mockMvc.perform(post("/pagamentos")
+                        .content(jsonRequestBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
+    }
+
 }
