@@ -13,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.print.attribute.standard.Media;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -135,6 +137,47 @@ public class PagamentoControllerIT {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void updateShouldUpdateAndReturnPagamentoDTOWhenIdExists() throws Exception {
+
+        String jsonRequestBody = objectMapper.writeValueAsString(pagamentoDTO);
+        mockMvc.perform(put("/pagamentos/{id}", existingId)
+                        .content(jsonRequestBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.valor").exists())
+                .andExpect(jsonPath("$.valor").value(pagamentoDTO.getValor()))
+                .andExpect(jsonPath("$.status").exists())
+                .andExpect(jsonPath("$.status").value("CRIADO"))
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
+    public void updateShouldReturnNotFoundExceptionWhenIdDoesNotExists() throws Exception {
+
+        pagamentoDTO = Factory.createPagamentoDTOWithInvalidData();
+
+        String jsonRequestBody = objectMapper.writeValueAsString(pagamentoDTO);
+        mockMvc.perform(put("/pagamentos/{id}", nonExistingId)
+                .content(jsonRequestBody)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andDo(print());
+    }
+
+    @Test
+    public void deleteShouldReturnNoContentWhenExists() throws Exception{
+        mockMvc.perform(delete("/pagamentos/{id}", existingId)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+                .andDo(print());
     }
 
 }
