@@ -180,4 +180,14 @@ public class PagamentoControllerIT {
                 .andDo(print());
     }
 
+    @Test
+    public void deleteShouldReturnNotFoundWhenIdDoesNotExists() throws Exception {
+        mockMvc.perform(delete("/pagamentos/{id}", nonExistingId)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+
+
 }
