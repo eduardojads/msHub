@@ -1,8 +1,8 @@
-package dto;
+package com.github.eduardojads.ms_pedido.dto;
 
-import entities.ItemDoPedido;
-import entities.Pedido;
-import entities.Status;
+import com.github.eduardojads.ms_pedido.entities.ItemDoPedido;
+import com.github.eduardojads.ms_pedido.entities.Pedido;
+import com.github.eduardojads.ms_pedido.entities.Status;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.Valid;

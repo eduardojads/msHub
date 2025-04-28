@@ -1,10 +1,10 @@
-package Service;
+package com.github.eduardojads.ms_pedido.Service;
 
-import dto.PedidoDTO;
+import com.github.eduardojads.ms_pedido.dto.PedidoDTO;
+import com.github.eduardojads.ms_pedido.repository.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import repository.PedidoRepository;
 
 import java.util.List;
 

@@ -1,10 +1,9 @@
-package dto;
+package com.github.eduardojads.ms_pedido.dto;
 
-import entities.ItemDoPedido;
+import com.github.eduardojads.ms_pedido.entities.ItemDoPedido;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

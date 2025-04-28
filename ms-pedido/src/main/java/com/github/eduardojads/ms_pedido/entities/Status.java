@@ -1,4 +1,4 @@
-package entities;
+package com.github.eduardojads.ms_pedido.entities;
 
 public enum Status {
 

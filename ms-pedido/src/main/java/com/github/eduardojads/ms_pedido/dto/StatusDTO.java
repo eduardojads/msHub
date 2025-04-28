@@ -1,6 +1,6 @@
-package dto;
+package com.github.eduardojads.ms_pedido.dto;
 
-import entities.Status;
+import com.github.eduardojads.ms_pedido.entities.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

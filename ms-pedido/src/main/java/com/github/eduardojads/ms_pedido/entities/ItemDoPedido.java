@@ -1,4 +1,4 @@
-package entities;
+package com.github.eduardojads.ms_pedido.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
