@@ -43,4 +43,11 @@ public class PedidoController {
 
         return ResponseEntity.created(uri).body(dto);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PedidoDTO> updatePedido(@PathVariable Long id,
+                                                  @Valid @RequestBody PedidoDTO dto){
+        dto = service.updatePedido(id, dto);
+        return ResponseEntity.ok(dto);
+    }
 }
