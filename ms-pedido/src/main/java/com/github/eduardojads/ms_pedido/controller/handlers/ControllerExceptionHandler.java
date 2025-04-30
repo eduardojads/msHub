@@ -1,8 +1,8 @@
-package com.github.eduardojads.ms_pagamento.controller.handlers;
+package com.github.eduardojads.ms_pedido.controller.handlers;
 
-import com.github.eduardojads.ms_pagamento.controller.handlers.dto.CustomErrorDTO;
-import com.github.eduardojads.ms_pagamento.controller.handlers.dto.ValidationErrorDTO;
-import com.github.eduardojads.ms_pagamento.service.exceptions.ResourceNotFoundException;
+import com.github.eduardojads.ms_pedido.controller.handlers.dto.CustomErrorDTO;
+import com.github.eduardojads.ms_pedido.controller.handlers.dto.ValidationErrorDTO;
+import com.github.eduardojads.ms_pedido.service.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

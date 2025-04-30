@@ -1,4 +1,4 @@
-package com.github.eduardojads.ms_pagamento.controller.handlers.dto;
+package com.github.eduardojads.ms_pedido.controller.handlers.dto;
 
 import lombok.Getter;
 
