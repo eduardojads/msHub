@@ -28,13 +28,15 @@ public class PedidoDTO {
     private String nome;
 
     @NotBlank(message = "CPF requerido")
-    @Size(min = 11, max = 11, message = "CPF deve ter 11 caracteres")
+    @Size(min = 14, max = 14, message = "CPF deve ter 11 caracteres")
     private String cpf;
+
     private LocalDate data;
 
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @NotEmpty(message = "Deve ter pelo menos um item do pedido")
     private List<@Valid ItemDoPedidoDTO> itens = new ArrayList<>();
 
     public PedidoDTO(Pedido entity) {

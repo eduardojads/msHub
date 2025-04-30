@@ -52,7 +52,7 @@ public class PedidoService {
 
     private void copyDtoToEntity(PedidoDTO dto, Pedido entity) {
         entity.setNome(dto.getNome());
-        entity.setNome(dto.getCpf());
+        entity.setCpf(dto.getCpf());
 
         List<ItemDoPedido> itens = new ArrayList<>();
 
