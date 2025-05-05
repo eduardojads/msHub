@@ -28,6 +28,6 @@ public class Pedido {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<ItemDoPedido> itens = new ArrayList<>();
 }

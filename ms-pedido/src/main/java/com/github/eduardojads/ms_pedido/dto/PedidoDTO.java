@@ -28,7 +28,7 @@ public class PedidoDTO {
     private String nome;
 
     @NotBlank(message = "CPF requerido")
-    @Size(min = 14, max = 14, message = "CPF deve ter 11 caracteres")
+    @Size(min = 14, max = 14, message = "CPF deve ter 14 caracteres")
     private String cpf;
 
     private LocalDate data;
